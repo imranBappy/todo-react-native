@@ -1,11 +1,9 @@
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import Header from './components/Header';
 import { TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import { FlatList } from 'react-native';
 import { useEffect, useState } from 'react';
-import ListItem from './components/ListItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 export const COLORS = { primary: '#1f145c', white: '#FFF' }
@@ -15,7 +13,28 @@ const storeData = async (value) => {
     await AsyncStorage.setItem('todos', stringifyData)
   } catch (e) { console.log(e); }
 }
-
+function ListItem({ todo, handleComplate, handleDelete }) {
+  const { task, complated, id } = todo.item;
+  return (
+    <View style={styles.listItem}>
+      <View style={{ flex: 1 }}>
+        <Text style={{
+          marginTop: 3,
+          fontWeight: 'bold', fontSize: 15, color: '#1f145c',
+          textDecorationLine: complated ? 'line-through' : 'none'
+        }}>{task}</Text>
+      </View>
+      {
+        !complated && <TouchableOpacity onPress={() => handleComplate(id)} TouchableOpacity style={[styles.actionIcon]}>
+          <Icon name='add' size={20} color="#fff" />
+        </TouchableOpacity>
+      }
+      <TouchableOpacity onPress={() => handleDelete(id)} style={[styles.actionIcon, { backgroundColor: 'red' }]}>
+        <Icon name='delete' size={20} color="#fff" />
+      </TouchableOpacity>
+    </View >
+  );
+}
 export default function App() {
   const [text, setText] = useState('')
   const [todos, setTodo] = useState([]);
@@ -64,7 +83,15 @@ export default function App() {
   }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <Header handleAllDelete={handleAllDelete} />
+      <View style={styles.header}>
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: COLORS.primary }} >TODO APP</Text>
+        <Icon onPress={handleAllDelete} style={{
+          padding: 10,
+          backgroundColor: 'red',
+          borderRadius: 50
+        }} name="delete" size={20} color={'#fff'} />
+
+      </View>
       <FlatList
         contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
@@ -78,7 +105,7 @@ export default function App() {
         </View>
         <TouchableOpacity onPress={addTodo}>
           <View style={styles.iconContainer} >
-            <Icon name='plus' color={COLORS.white} size={30} />
+            <Icon name='add' color={COLORS.white} size={30} />
           </View>
         </TouchableOpacity>
       </View>
@@ -88,6 +115,13 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    marginTop: 20,
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
   footer: {
     position: 'absolute',
     bottom: 0,
@@ -104,7 +138,8 @@ const styles = StyleSheet.create({
     marginRight: 20,
     borderRadius: 30,
     paddingHorizontal: 25,
-    paddingVertical: 10
+    paddingVertical: 10,
+    marginLeft:5,
   },
   iconContainer: {
     height: 50,
@@ -114,6 +149,25 @@ const styles = StyleSheet.create({
     elevation: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
+    marginRight: 5,
+  },
+  listItem: {
+    padding: 20,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    elevation: 12,
+    borderRadius: 7,
+    marginVertical: 10
+  },
+  actionIcon: {
+    height: 25,
+    width: 25,
+    backgroundColor: 'green',
+    justifyContent: 'center',
+    alignContent: 'center',
+    borderRadius: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 4,
   }
 });
