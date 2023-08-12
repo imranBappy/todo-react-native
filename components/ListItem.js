@@ -1,12 +1,9 @@
-import { StyleSheet, Text, View } from 'react-native'
-import { COLORS } from '../App';
-import { TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons'
-
-
+import { COLORS } from "../App";
 
 function ListItem({ todo, handleComplate, handleDelete }) {
-    const { task, complated, id } = todo.item;
+    const { task, complated, id } = todo.item || { task: "no task", complated: false, id: 0 };
     return (
         <View style={styles.listItem}>
             <View style={{ flex: 1 }}>
@@ -27,12 +24,20 @@ function ListItem({ todo, handleComplate, handleDelete }) {
         </View >
     );
 }
-
-export default ListItem;
-
 const styles = StyleSheet.create({
-    listItem: {
 
+
+    iconContainer: {
+        height: 50,
+        width: 50,
+        backgroundColor: "#1f145c",
+        borderRadius: 25,
+        elevation: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 5,
+    },
+    listItem: {
         padding: 20,
         backgroundColor: '#fff',
         flexDirection: 'row',
@@ -52,3 +57,4 @@ const styles = StyleSheet.create({
         marginRight: 4,
     }
 });
+export default ListItem;
